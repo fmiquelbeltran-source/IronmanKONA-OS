@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {normalizeDomestiqueActivity,parseDomestiqueSnapshot,applyDomestiqueSnapshot} from '../domestique-bridge.js';
+let a=normalizeDomestiqueActivity({id:'icu_abc',date:'2026-11-08',sport:'Ride',duration_min:65,tss:32});
+assert.equal(a.id,'intervals-abc');assert.equal(a.minutes,65);assert.equal(a.type,'bike');
+assert.equal(normalizeDomestiqueActivity({date:'2026-11-08',sport:'Soccer',duration_min:90}),null);
+assert.equal(normalizeDomestiqueActivity({id:5,date:'2026-11-08',sport:'Run',duration_min:-1}),null);
+let data=parseDomestiqueSnapshot({ok:true,activities:[{id:'abc',date:'2026-11-08',sport:'Ride',duration_min:60},{id:'icu_abc',date:'2026-11-08',sport:'Ride',duration_s:3600,avg_hr:125},{id:'def',date:'2026-11-08',sport:'Swim',duration_min:25}],wellness:[{date:'2026-11-08',hrv:45}]});
+assert.equal(data.activities.length,2);
+let state={importedActivities:[],domestiqueWellness:{}};
+let first=applyDomestiqueSnapshot(state,data);
+assert.equal(first.added,2);assert.equal(state.importedActivities.length,2);
+let second=applyDomestiqueSnapshot(state,data);
+assert.equal(second.added,0);assert.equal(second.duplicates,2);
+assert.equal(Object.keys(state.domestiqueWellness).length,1);
+assert.equal(state.importedActivities.find(a=>a.id==='intervals-abc').hr,125);
+console.log('OK: normalización, privacidad de campos, deportes, deduplicación y recuperación.');

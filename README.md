@@ -1,64 +1,45 @@
-# KONA OS 2030 · v5 GRATUITA · sincronización local Domestique
+# KONA OS 2030 · v6 — Análisis de actividades (GRATIS)
 
-La versión 5 mantiene todas las secciones de Kona OS v4 e incorpora lectura automática de actividades y métricas de recuperación obtenidas de tu Domestique local, **sin claves ni suscripciones**. No hay conexión directa con la API de Garmin, Strava ni Intervals.icu. Domestique es una aplicación de terceros que puede cambiar sus endpoints; si los cambia, tendremos que actualizar el puente.
+**Novedad:** ficha individual al pulsar cualquier entrenamiento importado; gráficas por deporte; comparativas descriptivas con sesiones anteriores; resumen de entrenamiento importado por disciplina dentro de la revisión dominical. Sigue conectado al puente local de Domestique de la versión 5, sin suscripciones ni API de pago.
 
-## PASO 0: copia de seguridad
+## Actualización de v5 a v6 (sin perder registros)
 
-Antes de actualizar entra en la web actual > **Ajustes → Descargar copia JSON** y guárdala fuera de GitHub. La v5 mantiene `konaos2030_v1` como clave local, por lo que debería conservar tus datos en el mismo navegador/dominio. La copia te protege si hay cualquier problema.
+1. **OBLIGATORIO por seguridad:** en tu Kona OS actual, entra en **Ajustes → Descargar copia JSON** y guarda la copia de forma privada en tu ordenador. No la subas a GitHub.
+2. Descomprime `KonaOS2030_Web_v6.zip` y sube **los archivos que hay dentro** a la raíz de tu repositorio `fmiquelbeltran-source/IronmanKONA-OS`, sustituyendo los antiguos. No subas la carpeta contenedora.
+3. Espera al despliegue de GitHub Pages. Abre `https://fmiquelbeltran-source.github.io/IronmanKONA-OS/` y recarga con `Ctrl+Shift+R`. Si hay una PWA instalada, ciérrala y vuelve a abrirla para permitir la actualización del service worker.
+4. Mantén Domestique y el puente local encendidos como en la v5. **No necesitas reinstalar el puente** para consultar fecha, disciplina, distancia, tiempo, FC media, vatios y carga que ya obtenías antes.
+5. En **Garmin / Strava**, pulsa en el nombre de un entrenamiento o en **Detalles ↗**. Se abrirá una ficha. En **Estadísticas**, baja a «Tu laboratorio de rendimiento» para elegir deporte y ver gráficas. En **Revisión domingo**, consulta el nuevo resumen por disciplina.
 
-## PASO 1: actualizar la web en GitHub
+## Puente opcional v6
 
-1. Descarga **KonaOS2030_Web_v5.zip** y descomprímelo.
-2. Entra en `https://github.com/fmiquelbeltran-source/IronmanKONA-OS`.
-3. Sube **los archivos de dentro del ZIP** a la raíz de la rama `main` y reemplaza los antiguos. No subas el ZIP sin descomprimir.
-4. Confirma el commit y espera al despliegue de GitHub Pages.
-5. Abre `https://fmiquelbeltran-source.github.io/IronmanKONA-OS/` y recarga a fondo con Ctrl+F5 si sigue saliendo la versión anterior.
-6. Abre «Garmin / Strava»: arriba verás el nuevo panel **Domestique → KONA OS**. Estará esperando al puente de Windows hasta completar el paso 2.
+El ZIP adicional `KonaOS2030_Puente_Windows_v6_OPCIONAL.zip` contiene el mismo puente probado de la versión 5, con una lista ampliada de campos **que se consultan únicamente si Domestique los ofrece** (cadencia, potencia normalizada, desnivel acumulado, FC máxima). Puedes sustituir la carpeta de tu puente por el nuevo, con el puente anterior cerrado. Es **opcional**; la web v6 funciona con el puente v5.
 
-## PASO 2: iniciar el puente local en Windows
+### Qué se ve en cada ficha
 
-1. Descarga **KonaOS2030_Puente_Windows_v1.zip** y descomprímelo en una carpeta estable del PC, por ejemplo `Documentos\KonaOS-Puente`.
-2. Abre Domestique y comprueba que cargue las actividades de Intervals.icu.
-3. Haz doble clic en `INICIAR_PUENTE.bat`. Requiere **Python 3**, que es gratuito. Si Windows dice que no encuentra Python, instálalo desde `https://www.python.org/downloads/windows/` y vuelve a abrir el `.bat`.
-4. Debe aparecer el texto «Escuchando solo en http://127.0.0.1:23571/health» y permanecer abierta la consola. Puedes comprobarlo en el navegador en `http://127.0.0.1:23571/health` (muestra **solo** el estado del puente, nunca tus actividades).
-5. Abre Kona OS desde el **mismo ordenador** en Chrome/Edge y entra en **Garmin / Strava**. Pulsa «Sincronizar ahora» o espera un momento. Si el navegador pide permiso para acceso a dispositivos en la red local, autorízalo para tu propia página de Kona OS.
-6. Verifica que haya actividades. **Vincular** una actividad a una sesión planificada es opcional y siempre manual para evitar asignaciones erróneas.
-7. Si quieres que el puente se inicie con Windows, usa `ACTIVAR_INICIO_AUTOMATICO.bat` **después de decidir dónde guardar la carpeta definitivamente**. Para desactivarlo, `DESACTIVAR_INICIO_AUTOMATICO.bat`. No hace falta permisos de administrador. Domestique también tiene que estar abierto y sincronizado.
+- Fecha, tipo, nombre y fuente de la actividad.
+- Duración, distancia, frecuencia cardíaca media, ritmo de natación o carrera, velocidad de bici, potencia y carga cuando están presentes.
+- Potencia normalizada, cadencia, FC máxima, desnivel si llegan a través del conector actualizado.
+- Comparación **descriptiva**, no clínica ni causal, con la última actividad de la misma disciplina, e historial con enlaces a las fichas.
+- Gráficas de **métricas medias por entrenamiento**, y volumen detectado por semanas. No se representan series segundo a segundo ni se atribuye valor FTP/VO₂máx que no haya sido medido.
+- Resumen por disciplina en **Revisión domingo**, distinguiendo horas planificadas, horas detectadas y sesiones vinculadas para no contar dos veces.
 
-## Qué ocurre automáticamente
+**Aclaraciones:** el ritmo calculado con minutos redondeados es una aproximación. Si el origen no entrega vatios, TSS, cadencia u otro dato, la ficha mostrará «Sin datos» (no inventa valores). Para comparar mejoras, deben considerarse desnivel, intensidad, fatiga y tiempo.
 
-- Con Kona OS abierta en el PC y el puente en ejecución, la web consulta Domestique al iniciar y cada **cinco minutos** mientras la pestaña está abierta. Al volver a una pestaña que estaba oculta, puede actualizarse.
-- La web guarda localmente las nuevas actividades de los deportes reconocidos y un histórico limitado de métricas de recuperación, sin sobreescribir registros hechos manualmente.
-- Las actividades se deduplican por identificador de Intervals.icu/Domestique cuando está disponible. Una misma sesión con identificadores distintos (p. ej. archivo FIT manual y sincronización de Intervals) puede necesitar revisión manual.
-- Una actividad **no completa automáticamente** la sesión de tu plan: para evitar errores, debes pulsar **Vincular** cuando haya una única coincidencia del deporte y la fecha.
-- Las métricas disponibles de recuperación (sueño, FC reposo, HRV, CTL/ATL/TSB) se incluyen como datos *informativos* en el informe de ChatGPT. La revisión local y las progresiones de entrenamiento siguen necesitando validar las sesiones y las sensaciones.
+## Privacidad y limitaciones
 
-## Qué NO es automático (ni gratuito de forma desatendida)
+La app sigue utilizando exactamente la **misma clave local `konaos2030_v1`**; conserva los datos del navegador para el mismo dominio. Al exportar una copia JSON también incluyes el histórico importado, por lo que el archivo es privado. El código publicado en GitHub es público, pero **tus entrenamientos no se publican**.
 
-- Con el **PC apagado**, Domestique cerrado o Kona OS cerrada, **no existe sincronización** ni servicio en segundo plano de la web.
-- Si abres la web desde el móvil, **no tendrá acceso directo a Domestique** de tu ordenador. Puedes conservar los datos mediante exportaciones/importaciones JSON o, en otra fase, utilizar un servicio de sincronización en nube con consentimiento y acceso privado.
-- El análisis deportivo personalizado con ChatGPT sigue siendo **manual**: el domingo, en «Revisión domingo», pulsa «Copiar informe para ChatGPT», pégalo en nuestra conversación y aprueba en la web la propuesta JSON que generemos. ChatGPT Plus no incluye una API gratis para hacer ese trabajo automáticamente dentro de la web.
-- Domestique prioriza ciclismo y, en algunas versiones, su endpoint de actividad sólo ofrece el historial **reciente**. El puente prueba también el archivo de actividades, pero quizá falten entrenamientos antiguos o datos limitados por las APIs originales. La importación CSV manual de la v4 continúa disponible.
+El puente solo escucha en `127.0.0.1`, acepta únicamente la dirección de origen de tu Kona OS y hace peticiones de lectura. No se añaden claves API ni llamadas de pago. Los datos se actualizan mientras tengas el PC, Domestique, el puente y Kona OS abiertos. El domingo todavía necesitarás pulsar «Copiar informe para ChatGPT», pegar el texto en la conversación y aprobar el plan que te devuelva.
 
-## Seguridad
-
-- El puente **solo escucha en 127.0.0.1**, utiliza peticiones **de lectura** a Domestique, nunca solicita ni lee sus archivos `.env`, ni contraseñas, ni tokens de Garmin/Strava/Intervals.icu.
-- **Solo autoriza** como origen web `https://fmiquelbeltran-source.github.io`, la dirección de tu Kona OS. No admite otros orígenes ni permite escrituras. Se prueba con requests simuladas.
-- Sólo transmite del puente al navegador métricas deportivas permitidas: **no envía coordenadas GPS, credenciales o datos de cuenta**. El navegador guarda la información en localStorage.
-- La web es pública como código de GitHub Pages, pero tus registros **no se publican** ni se suben al repositorio. No publiques las copias JSON personales en GitHub.
-- Windows puede pedir permiso de acceso a la red local desde Chrome/Edge. Si no conecta aunque `http://127.0.0.1:23571/health` funcione, prueba con Chrome/Edge desde el propio ordenador, recarga la web y comprueba permisos del navegador o extensiones de privacidad.
-- Evita modificar el código para exponer el puerto `23571` en la red doméstica o Internet.
+No cambies los nombres de los archivos de JS. No elimines tus datos del navegador antes de crear la copia JSON.
 
 ## Pruebas
 
-```bash
-python -m unittest discover -s tests -p test_bridge.py -v
-node tests/test_domestique.mjs
-```
+- `node tests/test_domestique.mjs`
+- `node tests/test_activity_v6.mjs`
+- `python -m unittest discover -s tests -p test_bridge.py -v`
+- `node --check app.js` y equivalentes para los módulos nuevos
 
-Pruebas realizadas con un servidor Domestique simulado: control de origen y Host, sanitización de credenciales, conectividad, normalización y deduplicación, historial de recuperación. **La conexión end-to-end a tu Domestique real solo puede verificarse en tu Windows**. La prueba visual con navegador no pudo completarse en el entorno de creación por una restricción local de navegación; no se afirma que ya esté validada en tu ordenador.
+Tests de unidad realizados con actividades simuladas, incluidos datos ausentes y repetidos. **La comprobación visual end-to-end en un navegador real está pendiente** porque el navegador de pruebas de este entorno ha bloqueado la navegación local (`ERR_BLOCKED_BY_ADMINISTRATOR`). Verifica primero en tu web la ficha de la salida del 12 de septiembre.
 
-## Coste
-
-GitHub Pages + Domestique + el puente Python + esta versión local de Kona OS: **0 €**.
-
+**Coste de uso de este sistema: 0 €**, dentro de los límites gratuitos de GitHub Pages y los programas que ya utilizas.

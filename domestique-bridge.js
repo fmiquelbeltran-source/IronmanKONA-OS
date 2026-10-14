@@ -31,9 +31,13 @@ export function normalizeDomestiqueActivity(a){
  const avgHr=n(choose(a,['avg_hr','average_heartrate'])||choose(s,['avg_hr']));
  const power=n(choose(a,['avg_power','avg_power_w','average_watts'])||choose(s,['avg_power','avg_power_w']));
  const tss=n(choose(a,['tss','icu_training_load','training_load'])||choose(s,['tss']));
+ const cadence=n(choose(a,['avg_cadence','cadence','average_cadence'])||choose(s,['avg_cadence','cadence']));
+ const elevationM=n(choose(a,['elevation_gain','total_elevation_gain','elevation_m'])||choose(s,['elevation_gain','total_elevation_gain']));
+ const normalizedPower=n(choose(a,['normalized_power','normalized_power_w','np','weighted_average_watts'])||choose(s,['normalized_power','normalized_power_w','np']));
+ const maxHr=n(choose(a,['max_hr','max_heartrate'])||choose(s,['max_hr']));
  return {id:cleanId?`intervals-${cleanId}`:`domestique-${day}-${type}-${Math.round(minutes)}-${title.replace(/[^a-z0-9]/gi,'').slice(0,20)}`,
    source:'Domestique local',sourceDate:String(sourceDate),date:day,type,title,
-   minutes:Math.round(minutes),distanceM:dist??(distanceKm!==null?distanceKm*1000:null),hr:avgHr,watts:power,trainingLoad:tss,
+   minutes:Math.round(minutes),elapsedSec:n(seconds),distanceM:dist??(distanceKm!==null?distanceKm*1000:null),hr:avgHr,watts:power,trainingLoad:tss,cadence,elevationM,normalizedPower,maxHr,
    importedAt:new Date().toISOString()};
 }
 export function parseDomestiqueSnapshot(raw){

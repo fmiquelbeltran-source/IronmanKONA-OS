@@ -51,17 +51,29 @@ export function parseActivitiesCsv(csv){
     const hr=number(pick(obj,'average_heartrate','average_hr','avg_hr','heart_rate_avg'));
     const watts=number(pick(obj,'average_watts','weighted_average_watts','avg_power'));
     const load=number(pick(obj,'icu_training_load','training_load','tss'));
+    const cadence=number(pick(obj,'average_cadence','avg_cadence','cadence'));
+    const elevationM=number(pick(obj,'total_elevation_gain','elevation_gain','elevation_gain_m'));
+    const normalizedPower=number(pick(obj,'weighted_average_watts','normalized_power','normalized_power_w'));
+    const maxHr=number(pick(obj,'max_heartrate','max_hr','maximum_heartrate'));
     const name=pick(obj,'name','title','nombre')||TYPES[type].name;
     const id=rawId?`intervals-${rawId}`:`intervals-${start}-${type}-${minutes}-${distance??''}`;
-    activities.push({id,source:'Intervals.icu CSV',sourceDate:start,date,type,title:String(name).slice(0,110),minutes,distanceM:distance,hr,watts,trainingLoad:load,importedAt:new Date().toISOString()});
+    activities.push({id,source:'Intervals.icu CSV',sourceDate:start,date,type,title:String(name).slice(0,110),minutes,elapsedSec:sec,distanceM:distance,hr,watts,trainingLoad:load,cadence,elevationM,normalizedPower,maxHr,importedAt:new Date().toISOString()});
   }
   return {activities,excluded,read:rows.length};
 }
 export function mergeActivities(state,newItems){
   const originals=Array.isArray(state.importedActivities)?state.importedActivities:[];
-  const keys=new Set(originals.map(a=>a.id));let added=0;
-  for(const a of newItems){if(keys.has(a.id))continue;keys.add(a.id);originals.push(a);added++;}
-  originals.sort((a,b)=>b.date.localeCompare(a.date));state.importedActivities=originals;return {added,duplicates:newItems.length-added};
+  const byId=new Map(originals.map(a=>[a.id,a]));let added=0,enriched=0;
+  const fields=['distanceM','elapsedSec','hr','watts','trainingLoad','cadence','elevationM','normalizedPower','maxHr'];
+  for(const a of newItems){const prev=byId.get(a.id);
+    if(!prev){originals.push(a);byId.set(a.id,a);added++;continue;}
+    // Completa campos ausentes, nunca borra datos anteriores ni cambia vinculaciones.
+    let changed=false;
+    for(const f of fields){if((prev[f]===null||prev[f]===undefined||prev[f]==='')&&a[f]!==null&&a[f]!==undefined&&a[f]!==''){prev[f]=a[f];changed=true;}}
+    if(changed)enriched++;
+  }
+  originals.sort((a,b)=>b.date.localeCompare(a.date));state.importedActivities=originals;
+  return {added,duplicates:newItems.length-added,enriched};
 }
 export function activityWeek(state,week){return (state.importedActivities||[]).filter(a=>a.date>=week.start&&a.date<=addDays(week.start,6));}
 export function importedWeekSummary(state,week){const list=activityWeek(state,week);return {count:list.length,minutes:list.reduce((n,a)=>n+a.minutes,0),distanceM:list.reduce((n,a)=>n+(a.distanceM||0),0)};}
@@ -72,14 +84,14 @@ export function linkableSession(state,activity){
 }
 export function importedActivitiesView(state){const list=(state.importedActivities||[]), recent=list.slice(0,90);
   const total=list.reduce((n,a)=>n+a.minutes,0), swim=list.filter(a=>a.type==='swim').length,bike=list.filter(a=>a.type==='bike').length,run=list.filter(a=>a.type==='run').length;
-  return `<div class="page-head"><div class="eyebrow">FUENTES DE DATOS / GRATUITO</div><h1>Garmin · Strava · Domestique</h1><p class="subtitle">Primera fase: importa actividades exportadas como CSV desde Intervals.icu. Kona OS conserva tus datos en este navegador, sin claves ni suscripciones.</p></div>
+  return `<div class="page-head"><div class="eyebrow">FUENTES DE DATOS / GRATUITO</div><h1>Garmin · Strava · Domestique</h1><p class="subtitle">Tus entrenamientos reales sincronizados con Domestique, con ficha detallada por actividad. CSV alternativo gratuito. Todos los datos se almacenan en este navegador.</p></div>
   <div class="notice info"><strong>Por qué Intervals.icu</strong><p>Domestique utiliza Intervals.icu, pero está centrado en el ciclismo. Un CSV de actividades compatible nos permite leer también running y natación. Debido a las limitaciones de las APIs de Garmin y Strava, algunas actividades pueden no exportarse; importa solo datos propios obtenidos legítimamente.</p></div>
   <div class="grid cols4 section">${card('Actividades importadas',list.length)}${card('Tiempo importado',minLabel(total))}${card('Running',run)}${card('Ciclismo / Natación',`${bike} / ${swim}`)}</div>
   <div class="panel section"><div class="panel-head"><div><h2>Importar actividades</h2><p>Selecciona el CSV de actividades que exportes desde tu cuenta de Intervals.icu.</p></div></div>
   <div class="tagrow"><button class="btn" data-activity-upload="1">↑ Importar CSV de actividades</button><input type="file" id="activities-csv-import" accept=".csv,text/csv" hidden/><a class="btn secondary" href="https://intervals.icu" target="_blank" rel="noreferrer noopener">Abrir Intervals.icu ↗</a></div><p class="caption" style="margin-top:15px">Repetir una importación no duplica actividades con el mismo identificador. El CSV se analiza únicamente en tu dispositivo. No introduzcas credenciales ni claves API en esta página.</p>
   <div class="notice info" style="margin-top:16px"><strong>Modo sincronización local:</strong> la web detecta el puente en Windows cuando está encendido y vuelve a consultar datos cada cinco minutos. También puedes importar CSV manualmente. Sin el ordenador encendido no hay sincronización.</div></div>
   <div class="panel section"><h2>Actividades recuperadas</h2><p class="caption" style="margin:12px 0">Para evitar duplicar minutos, los entrenamientos importados no se consideran completados en la planificación hasta que los vincules. Solo se ofrece vincular cuando hay una única sesión del mismo deporte y fecha.</p>
-  ${recent.length?`<div class="session-list" style="margin-top:18px">${recent.map(a=>{const linked=Boolean(a.linkedSessionId),target=linkableSession(state,a);const dist=a.distanceM!==null&&a.distanceM!==undefined?(a.type==='swim'?`${Math.round(a.distanceM)} m`:`${(a.distanceM/1000).toFixed(2)} km`):'';return `<div class="session"><div class="sicon ${(TYPES[a.type]||{}).css||''}">${TYPES[a.type]?.icon||'•'}</div><div class="sinfo"><strong>${safe(a.title)}</strong><small>${dateLabel(a.date)} · ${safe(TYPES[a.type]?.name||a.type)} · ${minLabel(a.minutes)} ${dist?safe('· '+dist):''}${a.hr?' · FC '+a.hr:''}${a.watts?' · '+a.watts+' W':''}</small></div>${linked?'<span class="status done">✓ Vinculada</span>':target?`<button class="btn small secondary" data-activity-link="${safe(a.id)}">Vincular</button>`:'<span class="status">Importada</span>'}</div>`;}).join('')}</div>`:'<div class="empty">Aún no has importado actividades. Importa un CSV para verlas aquí.</div>'}</div>`;
+  ${recent.length?`<div class="session-list imports-list" style="margin-top:18px">${recent.map(a=>{const linked=Boolean(a.linkedSessionId),target=linkableSession(state,a);const dist=a.distanceM!==null&&a.distanceM!==undefined?(a.type==='swim'?`${Math.round(a.distanceM)} m`:`${(a.distanceM/1000).toFixed(2)} km`):'';return `<div class="session"><div class="sicon ${(TYPES[a.type]||{}).css||''}">${TYPES[a.type]?.icon||'•'}</div><div class="sinfo"><button class="activity-title-button" type="button" data-activity-detail="${safe(a.id)}" title="Ver ficha de la actividad">${safe(a.title)} ↗</button><small>${dateLabel(a.date)} · ${safe(TYPES[a.type]?.name||a.type)} · ${minLabel(a.minutes)} ${dist?safe('· '+dist):''}${a.hr?' · FC '+a.hr:''}${a.watts?' · '+a.watts+' W':''}${a.trainingLoad!==null&&a.trainingLoad!==undefined?' · Carga '+a.trainingLoad:''}</small></div><button type="button" class="btn small ghost" data-activity-detail="${safe(a.id)}" aria-label="Abrir detalles">Detalles ↗</button>${linked?'<span class="status done">✓ Vinculada</span>':target?`<button class="btn small secondary" data-activity-link="${safe(a.id)}">Vincular</button>`:'<span class="status">Importada</span>'}</div>`;}).join('')}</div>`:'<div class="empty">Aún no has importado actividades. Importa un CSV para verlas aquí.</div>'}</div>`;
 }
 const card=(name,val)=>`<div class="panel stat"><div class="statlabel">${name}</div><div class="num">${val}</div></div>`;
 export function attachActivityToPlan(state,id){const a=(state.importedActivities||[]).find(x=>x.id===id);if(!a)throw Error('Actividad no encontrada.');if(a.linkedSessionId)throw Error('La actividad ya está vinculada.');const target=linkableSession(state,a);if(!target)throw Error('No hay una única sesión compatible en ese día.');if(state.logs[target.id]?.status==='done')throw Error('La sesión ya está marcada como completada.');
