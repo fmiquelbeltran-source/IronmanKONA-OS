@@ -1,3 +1,31 @@
+# KONA OS 2030 · v4 gratuita · importación de actividades
+
+## Novedad: actividades de Intervals.icu (fuente utilizada por Domestique)
+
+La versión v4 incorpora el apartado **Garmin / Strava**. Puedes importar un CSV de actividades de tu cuenta personal Intervals.icu. Reconoce actividades de running, ciclismo, natación, fuerza y movilidad, junto con duración, distancia, frecuencia cardíaca, potencia y carga cuando aparezcan en el archivo.
+
+**No es una sincronización automática** y **no conecta directamente con la aplicación Windows Domestique**. Los datos se leen solamente del CSV que eliges. Domestique está especializado en ciclismo y consume datos de Intervals.icu. Por ello se recomienda empezar por esta fuente multideporte. Intervals.icu puede limitar qué datos permite obtener por API de Garmin y Strava; no prometemos que estén todos. Hay que respetar sus condiciones y exportar solo datos propios autorizados.
+
+### Pasos de actualización de v3 a v4
+
+1. **Antes de actualizar**: entra en Kona OS > Ajustes > Descargar copia JSON. Guarda la copia en un lugar privado, fuera de GitHub.
+2. Descomprime el ZIP de esta entrega.
+3. Sube el contenido de la carpeta `KonaOS2030-free-v4` a la **raíz** del repositorio público de GitHub Pages, reemplazando los archivos de v3 (y añadiendo `activity-import.js`). Haz commit.
+4. Recarga la página después de que GitHub Pages publique la actualización. Si persiste la versión antigua, fuerza la recarga o cierra/reabre la pestaña.
+5. Abre en Kona OS el nuevo apartado **Garmin / Strava**.
+6. Desde tu cuenta Intervals.icu, descarga un CSV de tus actividades (si tu cuenta o interfaz permite la exportación). En Kona OS selecciona **Importar CSV de actividades** y elige ese archivo.
+7. Comprueba las actividades y pulsa **Vincular** cuando una actividad coincida con una única sesión programada del mismo deporte y fecha. La vinculación es optativa y no modifica la descripción original de tu plan.
+8. El informe de los domingos incluirá las actividades importadas, marcando cuáles están vinculadas. No debe sumar dos veces actividades importadas que ya se hayan vinculado.
+
+### Limitaciones y seguridad
+
+- Cero coste, ninguna API y ninguna clave. **No introduzcas ni compartas claves API de Intervals.icu, Garmin o Strava.**
+- La importación no reescribe ni sustituye los registros ya existentes; añade actividades únicas por ID.
+- Los datos viven en el almacenamiento local del navegador y pueden perderse si lo borras; utiliza copias JSON periódicas.
+- Los números de duración del CSV se interpretan como segundos para las columnas `moving_time`, `elapsed_time` o `duration` (o texto HH:MM:SS), como en el formato API de Intervals.icu.
+- La API de Intervals.icu restringe el acceso a datos de Strava y el 9 de octubre de 2026 anunció posibles restricciones futuras para Garmin. La exportación disponible depende de tu cuenta y origen.
+- Esta fase **no funciona en segundo plano, no importa automáticamente mientras no abres Kona OS, ni sincroniza entre varios dispositivos**. Un puente local con permisos explícitos sería el siguiente proyecto.
+
 # KONA OS 2030 · v3 gratuita
 
 **Cero pagos, sin necesidad de Supabase ni OpenAI API.** Esta versión funciona en GitHub Pages y mantiene la clave de almacenamiento original `konaos2030_v1`, por lo que conserva los registros actuales del mismo navegador y dirección web. Antes de actualizar, entra en **Ajustes → Descargar copia JSON**.
