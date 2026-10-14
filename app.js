@@ -2,6 +2,8 @@ import {APP_KEY,TYPES,DAYS,addDays,dateLabel,isoDate,startOfWeek,minLabel,initia
 import * as cloud from './cloud.js';
 import {statisticsView,sundayReport,parseChatGPTPlan} from './free-mode.js';
 import {parseActivitiesCsv,mergeActivities,importedActivitiesView,attachActivityToPlan,importedWeekSummary} from './activity-import.js';
+import {POLL_INTERVAL,fetchDomestiqueSnapshot,applyDomestiqueSnapshot,bridgePanel} from './domestique-bridge.js';
+let bridgeStatus={connected:false,pending:false,imported:0,error:''},bridgeRunning=false;
 let state=loadState(),page='dashboard',selectedWeek=pickWeek(),selectedDay=isoDate(new Date()),modal=null,reportMode='local',aiDraft=null,cloudBusy=false,cloudTimer=null,toastTimer=null;
 const TODAY=isoDate(new Date());
 const $=s=>document.querySelector(s),safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -12,7 +14,7 @@ function persist({sync=true}={}){saveState(state);if(sync&&cloud.getSession()&&c
 function navigate(p){page=p;window.scrollTo({top:0,behavior:'instant'});render();}
 const navItems=[['dashboard','◫','Mi panel'],['week','▦','Plan semanal'],['diary','◷','Diario y recuperación'],['review','◎','Revisión domingo'],['stats','▥','Estadísticas'],['imports','↥','Garmin / Strava'],['nutrition','♧','Nutrición'],['tests','⌁','Evaluaciones'],['settings','⚙','Ajustes y nube']];
 function topNav(){const nav=navItems.map(([id,ico,label])=>`<button type="button" data-nav="${id}" class="${id===page?'active':''}"><span class="ico">${ico}</span>${label}</button>`).join('');const bottom=[navItems[0],navItems[1],navItems[2],navItems[3],navItems[5],navItems[8]].map(([id,ico,label])=>`<button type="button" data-nav="${id}" class="${id===page?'active':''}"><span class="bico">${ico}</span>${label.replace(' y recuperación','').replace(' y nube','')}</button>`).join('');return `<div class="shell"><aside class="sidebar"><div class="logo"><div class="logo-mark">K.</div><div class="brandname">KONA OS<small>ROAD TO 2030</small></div></div><div><div class="nav-title">CENTRO DE CONTROL</div><nav class="nav">${nav}</nav></div><div class="sidebar-bottom"><div class="smalltag">MISIÓN KONA 2030</div><p>La consistencia gana. La recuperación también es entrenamiento.</p><div class="progress"><span style="width:8%"></span></div><small class="muted">Construcción de base · 2026</small></div></aside><main class="content"><header class="topbar"><div class="breadcrumb">KONA OS <span style="color:var(--lime)">/</span> ${safe(navItems.find(n=>n[0]===page)?.[2]||'')}</div><div class="topright"><span class="date-label">${new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</span><span class="live-pill">${cloud.getSession()?'Nube vinculada':'Modo local'}</span><span class="userdot">${safe((state.settings.name||'F').charAt(0).toUpperCase())}</span></div></header><div id="view"></div></main><nav class="bottomnav">${bottom}</nav></div>`;}
-function render(){const app=$('#app');app.innerHTML=topNav();const view=$('#view');view.innerHTML=({dashboard:dashboardView,week:weekView,diary:diaryView,review:reviewView,stats:()=>statisticsView(state),imports:()=>importedActivitiesView(state),nutrition:nutritionView,tests:testsView,settings:settingsView}[page]||dashboardView)();if(modal)showModal(modal);}
+function render(){const app=$('#app');app.innerHTML=topNav();const view=$('#view');view.innerHTML=({dashboard:dashboardView,week:weekView,diary:diaryView,review:reviewView,stats:()=>statisticsView(state),imports:()=>bridgePanel(bridgeStatus,state)+importedActivitiesView(state),nutrition:nutritionView,tests:testsView,settings:settingsView}[page]||dashboardView)();if(modal)showModal(modal);}
 function pageIntro(eye,title,subtitle){return `<div class="page-head"><div class="eyebrow">${eye}</div><h1>${title}</h1><p class="subtitle">${subtitle}</p></div>`;}
 function kpi(label,value,foot){return `<div class="panel stat"><div class="statlabel">${label}</div><div class="num">${value}</div><div class="statfoot">${foot}</div></div>`;}
 function statusChip(log){return `<span class="status ${log?.status==='done'?'done':log?.status==='skipped'?'skipped':''}">${log?.status==='done'?'✓ Hecha':log?.status==='skipped'?'× Omitida':'Pendiente'}</span>`;}
@@ -41,7 +43,7 @@ async function copyToClipboard(text){try{await navigator.clipboard.writeText(tex
 
 const getFD=e=>Object.fromEntries(new FormData(e).entries());
 document.addEventListener('click',async e=>{
-  const a=e.target.closest('[data-nav], [data-week-shift], [data-edit-session], [data-add-session], [data-close], [data-add-test], [data-delete-session], [data-remove-test], [data-review-save], [data-next-local], [data-next-ai], [data-confirm-ai], [data-cloud-push], [data-cloud-pull], [data-logout], [data-signup], [data-export], [data-import], [data-reset], [data-chatgpt-copy], [data-chatgpt-import], [data-confirm-chatgpt], [data-activity-upload], [data-activity-link]');if(!a)return;e.preventDefault();
+  const a=e.target.closest('[data-nav], [data-week-shift], [data-edit-session], [data-add-session], [data-close], [data-add-test], [data-delete-session], [data-remove-test], [data-review-save], [data-next-local], [data-next-ai], [data-confirm-ai], [data-cloud-push], [data-cloud-pull], [data-logout], [data-signup], [data-export], [data-import], [data-reset], [data-chatgpt-copy], [data-chatgpt-import], [data-confirm-chatgpt], [data-activity-upload], [data-activity-link], [data-domestique-sync]');if(!a)return;e.preventDefault();
   try{
     if(a.dataset.nav){closeModal();navigate(a.dataset.nav);return;}
     if(a.hasAttribute('data-week-shift')){const index=state.weeks.findIndex(w=>w.start===selectedWeek),n=Math.max(0,Math.min(state.weeks.length-1,index+Number(a.dataset.weekShift)));selectedWeek=state.weeks[n].start;render();return;}
@@ -63,6 +65,7 @@ document.addEventListener('click',async e=>{
     if(a.hasAttribute('data-cloud-pull')){const data=await cloud.pullState();if(!data)throw Error('No hay una copia en la nube. Puedes subir la actual.');if(!confirm('Se sustituirán los datos locales por la copia de la nube. ¿Continuar?'))return;validateImport(data.payload);state=data.payload;persist({sync:false});selectedWeek=pickWeek();render();alertToast('Datos recuperados de Supabase.');return;}
     if(a.hasAttribute('data-logout')){cloud.logout();render();alertToast('Sesión cerrada.');return;}
     if(a.hasAttribute('data-signup')){const fd=getFD($('#cloud-login'));if(!fd.email||!fd.password)throw Error('Introduce email y contraseña para registrarte.');const res=await cloud.signup(fd.email,fd.password);alertToast(res.access_token?'Cuenta creada.':'Revisa tu email para confirmar el registro.');return;}
+    if(a.hasAttribute('data-domestique-sync')){await syncDomestique(true);return;}
     if(a.hasAttribute('data-activity-upload')){$('#activities-csv-import')?.click();return;}
     if(a.hasAttribute('data-activity-link')){const id=a.dataset.activityLink;const target=attachActivityToPlan(state,id);persist();render();alertToast('Actividad vinculada con '+target.title);return;}
     if(a.hasAttribute('data-export')){const bytes=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(bytes),link=document.createElement('a');link.href=url;link.download=`konaos-backup-${TODAY}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),2000);alertToast('Copia de seguridad exportada.');return;}
@@ -101,6 +104,26 @@ document.addEventListener('submit',async e=>{
     if(form.getAttribute('id')==='cloud-login'){const r=await cloud.login(f.email,f.password);render();alertToast('Sesión conectada. Ya puedes sincronizar.');return;}
   }catch(err){alertToast('⚠ '+err.message);console.error(err);}
 });
+// La integración trabaja solo con un puente en 127.0.0.1, en el mismo equipo.
+async function syncDomestique(manual=false){
+  if(bridgeRunning)return;
+  if(!manual&&document.visibilityState==='hidden')return;
+  bridgeRunning=true;bridgeStatus={...bridgeStatus,pending:true,error:''};if(page==='imports')render();
+  try{
+    const parsed=await fetchDomestiqueSnapshot();
+    const results=applyDomestiqueSnapshot(state,parsed);
+    bridgeStatus={connected:true,pending:false,imported:results.added,error:parsed.warnings.join(' ')};
+    persist({sync:false});
+    if(manual)alertToast(`Domestique conectado: ${results.added} nuevas y ${results.duplicates} ya existentes.`);
+    if(page==='imports'&&!modal)render();
+  }catch(e){bridgeStatus={connected:false,pending:false,imported:0,error:e.message};
+    if(manual)alertToast('⚠ '+e.message+'. Comprueba que Domestique y el puente estén abiertos.');
+    if(page==='imports'&&!modal)render();
+  }finally{bridgeRunning=false;}
+}
+setTimeout(()=>syncDomestique(false),1200);
+setInterval(()=>syncDomestique(false),POLL_INTERVAL);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-new Date(state.domestiqueLastSync||0).getTime()>POLL_INTERVAL)syncDomestique(false);});
 // El sistema funciona en GitHub Pages, sin backend, incluso sin conexión después de cargar.
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(console.warn);
 render();
