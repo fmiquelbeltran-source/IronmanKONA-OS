@@ -1,5 +1,4 @@
-const CACHE = 'konaos-v8.0.0';
-const CORE=['./','./index.html','./styles.css','./app.js','./data.js','./cloud.js','./free-mode.js','./activity-import.js','./health-sources.js','./activity-analytics.js','./assets/icon.svg','./manifest.webmanifest'];
-self.addEventListener('install', event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',event=>{if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;event.respondWith(fetch(event.request).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(event.request,copy));}return res;}).catch(()=>caches.match(event.request)));});
+const CACHE='kona-clean-v1-20261014';const CORE=['./','./index.html','./styles.css','./app.js','./engine.mjs','./manifest.webmanifest','./assets/icon.svg'];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==self.location.origin)return;const u=new URL(e.request.url);if(u.pathname.endsWith('/plan-semana.json')){e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));return;}e.respondWith(fetch(e.request).then(resp=>{if(resp.ok){const copy=resp.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));}return resp;}).catch(()=>caches.match(e.request)));});
