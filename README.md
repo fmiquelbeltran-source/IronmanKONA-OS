@@ -1,45 +1,31 @@
-# KONA OS 2030 · v6 — Análisis de actividades (GRATIS)
+# KONA OS 2030 — v8 · Google Health + Strava, sin Domestique
 
-**Novedad:** ficha individual al pulsar cualquier entrenamiento importado; gráficas por deporte; comparativas descriptivas con sesiones anteriores; resumen de entrenamiento importado por disciplina dentro de la revisión dominical. Sigue conectado al puente local de Domestique de la versión 5, sin suscripciones ni API de pago.
+Este paquete sustituye el sistema de entrada de datos de Domestique por **Google Health y Strava a través de Salud Conectada (Health Connect) en Android**. Incluye una web compatible con GitHub Pages y un proyecto Android independiente para construir el conector que lee datos autorizados de Salud Conectada y los envía a Supabase.
 
-## Actualización de v5 a v6 (sin perder registros)
+## Estado probado y pendientes
 
-1. **OBLIGATORIO por seguridad:** en tu Kona OS actual, entra en **Ajustes → Descargar copia JSON** y guarda la copia de forma privada en tu ordenador. No la subas a GitHub.
-2. Descomprime `KonaOS2030_Web_v6.zip` y sube **los archivos que hay dentro** a la raíz de tu repositorio `fmiquelbeltran-source/IronmanKONA-OS`, sustituyendo los antiguos. No subas la carpeta contenedora.
-3. Espera al despliegue de GitHub Pages. Abre `https://fmiquelbeltran-source.github.io/IronmanKONA-OS/` y recarga con `Ctrl+Shift+R`. Si hay una PWA instalada, ciérrala y vuelve a abrirla para permitir la actualización del service worker.
-4. Mantén Domestique y el puente local encendidos como en la v5. **No necesitas reinstalar el puente** para consultar fecha, disciplina, distancia, tiempo, FC media, vatios y carga que ya obtenías antes.
-5. En **Garmin / Strava**, pulsa en el nombre de un entrenamiento o en **Detalles ↗**. Se abrirá una ficha. En **Estadísticas**, baja a «Tu laboratorio de rendimiento» para elegir deporte y ver gráficas. En **Revisión domingo**, consulta el nuevo resumen por disciplina.
+**Código web v8 comprobado:** no llama al puente de Domestique; conserva la clave de almacenamiento `konaos2030_v1`, fichas, gráficas e informes; deduplica actividades al fusionar entrenamiento legado y Health Connect; integra sueño/HRV/FC en reposo en la revisión dominical; usa tablas privadas de Supabase con RLS. La automatización antigua de Intervals.icu queda **desactivada** mediante `.github/workflows/kona-sync.yml` (sobrescribir este archivo, no solo subir los nuevos).
 
-## Puente opcional v6
+**Pendiente de probar en un móvil real:** el proyecto Kotlin para Android. Aquí no hay SDK Android instalado y no hemos compilado un APK; incluye el workflow `.github/workflows/android-apk.yml` que intentará generar `app-debug.apk` en GitHub Actions. Hasta que la compilación, los permisos y la primera carga real se verifiquen, **no hay sincronización automática activa**.
 
-El ZIP adicional `KonaOS2030_Puente_Windows_v6_OPCIONAL.zip` contiene el mismo puente probado de la versión 5, con una lista ampliada de campos **que se consultan únicamente si Domestique los ofrece** (cadencia, potencia normalizada, desnivel acumulado, FC máxima). Puedes sustituir la carpeta de tu puente por el nuevo, con el puente anterior cerrado. Es **opcional**; la web v6 funciona con el puente v5.
+**Supabase:** no existe todavía un proyecto nuevo llamado Kona OS 2030 en la organización SOMA. La creación y activación son necesarias. No publiques nunca tu contraseña, JWT, refresh token ni `service_role`.
 
-### Qué se ve en cada ficha
+## Qué datos son posibles
 
-- Fecha, tipo, nombre y fuente de la actividad.
-- Duración, distancia, frecuencia cardíaca media, ritmo de natación o carrera, velocidad de bici, potencia y carga cuando están presentes.
-- Potencia normalizada, cadencia, FC máxima, desnivel si llegan a través del conector actualizado.
-- Comparación **descriptiva**, no clínica ni causal, con la última actividad de la misma disciplina, e historial con enlaces a las fichas.
-- Gráficas de **métricas medias por entrenamiento**, y volumen detectado por semanas. No se representan series segundo a segundo ni se atribuye valor FTP/VO₂máx que no haya sido medido.
-- Resumen por disciplina en **Revisión domingo**, distinguiendo horas planificadas, horas detectadas y sesiones vinculadas para no contar dos veces.
+- **Google Health → Salud Conectada:** sueño (horas), HRV (rMSSD) y frecuencia cardíaca en reposo, cuando constan allí y autorizas la lectura.
+- **Strava → Salud Conectada:** sesiones con GPS, duración y distancia cuando Strava las escribe. No promete potencia, TSS, intervalos, frecuencia cardíaca por segundo ni todas las modalidades.
+- **Kona OS:** ficha individual, estadísticas, revisión dominical, subida y descarga de tus resúmenes con autenticación privada.
 
-**Aclaraciones:** el ritmo calculado con minutos redondeados es una aproximación. Si el origen no entrega vatios, TSS, cadencia u otro dato, la ficha mostrará «Sin datos» (no inventa valores). Para comparar mejoras, deben considerarse desnivel, intensidad, fatiga y tiempo.
+Los permisos son de **solo lectura** en Salud Conectada. Los registros se almacenan únicamente en tu cuenta privada Supabase, no en el repositorio GitHub. En tu móvil se guarda la sesión con cifrado Android. Puedes revocar permisos en ajustes de Salud Conectada y desvincular la aplicación.
 
-## Privacidad y limitaciones
+## Instalación
 
-La app sigue utilizando exactamente la **misma clave local `konaos2030_v1`**; conserva los datos del navegador para el mismo dominio. Al exportar una copia JSON también incluyes el histórico importado, por lo que el archivo es privado. El código publicado en GitHub es público, pero **tus entrenamientos no se publican**.
+Sigue `INSTALAR_V8.md` en orden. La actualización de la web es independiente de la instalación del conector Android.
 
-El puente solo escucha en `127.0.0.1`, acepta únicamente la dirección de origen de tu Kona OS y hace peticiones de lectura. No se añaden claves API ni llamadas de pago. Los datos se actualizan mientras tengas el PC, Domestique, el puente y Kona OS abiertos. El domingo todavía necesitarás pulsar «Copiar informe para ChatGPT», pegar el texto en la conversación y aprobar el plan que te devuelva.
+## Uso gratuito
 
-No cambies los nombres de los archivos de JS. No elimines tus datos del navegador antes de crear la copia JSON.
+La web, Health Connect y la compilación de prueba se basan en herramientas gratuitas (sujetas a sus límites). Supabase permite un plan gratuito, pero debes comprobar el precio al crear el proyecto. No usamos API de Strava, ya que su registro de aplicación de desarrollador exige suscripción. No usamos OpenAI API.
 
-## Pruebas
+## Limitaciones de Android
 
-- `node tests/test_domestique.mjs`
-- `node tests/test_activity_v6.mjs`
-- `python -m unittest discover -s tests -p test_bridge.py -v`
-- `node --check app.js` y equivalentes para los módulos nuevos
-
-Tests de unidad realizados con actividades simuladas, incluidos datos ausentes y repetidos. **La comprobación visual end-to-end en un navegador real está pendiente** porque el navegador de pruebas de este entorno ha bloqueado la navegación local (`ERR_BLOCKED_BY_ADMINISTRATOR`). Verifica primero en tu web la ficha de la salida del 12 de septiembre.
-
-**Coste de uso de este sistema: 0 €**, dentro de los límites gratuitos de GitHub Pages y los programas que ya utilizas.
+Sincronización en segundo plano programada cada 30 minutos, **no garantizada en un minuto exacto**; requiere permitir el acceso en segundo plano y que el dispositivo sea compatible. Google Health y Strava pueden tardar en escribir datos en Salud Conectada. El conector también permite forzar una sincronización manual para probar. Un APK debug compilado por GitHub Actions es de prueba y no reemplaza una app Android publicada y auditada.

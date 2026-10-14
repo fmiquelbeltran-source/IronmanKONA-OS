@@ -14,3 +14,25 @@ export async function me(){const s=await sessionValid();if(!s)throw Error('Inici
 export async function pushState(state){const session=await sessionValid();if(!session)throw Error('Inicia sesión antes de sincronizar.');const user=await me();await call('/rest/v1/kona_profiles?on_conflict=user_id',{method:'POST',token:session.access_token,headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:{user_id:user.id,payload:state,updated_at:new Date().toISOString()}});return true;}
 export async function pullState(){const session=await sessionValid();if(!session)throw Error('Inicia sesión antes de recuperar datos.');const user=await me();const result=await call(`/rest/v1/kona_profiles?user_id=eq.${encodeURIComponent(user.id)}&select=payload,updated_at`,{token:session.access_token});return result?.[0]||null;}
 export async function askCoach(payload){const s=await sessionValid();if(!s)throw Error('Debes iniciar sesión para utilizar el entrenador IA.');return call('/functions/v1/kona-coach',{method:'POST',token:s.access_token,body:payload});}
+
+// Actividades en tabla independiente: el proceso dominical nunca pisa planes ni registros manuales.
+export async function pullActivities(){
+ const s=await sessionValid();if(!s)throw Error('Inicia sesión para acceder a tus actividades en la nube.');
+ const rows=await call('/rest/v1/kona_activities?select=payload&order=recorded_at.desc&limit=1000',{token:s.access_token});
+ return Array.isArray(rows)?rows.map(x=>x.payload).filter(x=>x&&typeof x.id==='string'&&typeof x.date==='string'):[];
+}
+export async function upsertActivities(activities){
+ if(!activities?.length)return 0;
+ const s=await sessionValid();if(!s)return 0;
+ const user=await me();
+ const rows=activities.filter(a=>a?.id&&a?.date).slice(0,250).map(a=>({user_id:user.id,source_id:a.id,recorded_at:a.date,payload:a}));
+ for(let i=0;i<rows.length;i+=60){await call('/rest/v1/kona_activities?on_conflict=user_id,source_id',{method:'POST',token:s.access_token,headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:rows.slice(i,i+60)});}
+ return rows.length;
+}
+
+// Salud Conectada: SOLO los registros de la cuenta autenticada (RLS en Supabase).
+export async function pullWellness(){
+ const s=await sessionValid(); if(!s)throw Error('Inicia sesión para consultar tu recuperación.');
+ const rows=await call('/rest/v1/kona_wellness?select=day,payload&order=day.desc&limit=120',{token:s.access_token});
+ return Array.isArray(rows)?rows.map(x=>({...x.payload,date:x.day})).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date)):[];
+}
