@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1219">
+  <meta name="description" content="Panel personal de planes Ironman: calendario, natación, ciclismo, carrera y nutrición.">
+  <title>PLANES / IRONMAN OS</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+    :root{color-scheme:dark;--bg:#091017;--surface:#111d26;--surface2:#15222e;--line:#293742;--text:#f0f5f5;--muted:#92a5ad;--green:#bdf76d;--aqua:#76dcdf;--amber:#f4c67d;--pink:#efa5b8;--r:19px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}button,a{font:inherit}a{color:inherit;text-decoration:none}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:4px}::selection{background:var(--green);color:#091017}
+    .shell{min-height:100vh;display:grid;grid-template-columns:236px minmax(0,1fr)}.sidebar{border-right:1px solid var(--line);padding:32px 20px;display:flex;flex-direction:column;gap:24px;position:sticky;top:0;height:100vh;background:#0d161e;z-index:10}.logo{display:flex;align-items:center;gap:12px;padding:0 12px}.mark{width:37px;height:37px;display:grid;place-items:center;border:2px solid var(--green);border-radius:12px;color:var(--green);font-size:23px;font-weight:800;transform:rotate(-7deg)}.logotxt{font-family:Manrope,sans-serif;letter-spacing:.14em;font-weight:800;font-size:14px;line-height:1.4}.logotxt small{display:block;letter-spacing:.22em;font:600 9px 'DM Sans',sans-serif;color:var(--muted)}.section-label{font-size:10px;font-weight:700;letter-spacing:.16em;color:#637c87;margin:22px 12px 8px}.nav{display:flex;flex-direction:column;gap:4px}.nav a{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;color:var(--muted);font-weight:600;transition:.2s}.nav a:hover,.nav a.active{color:var(--text);background:#1c2b34}.nav a.active{box-shadow:inset 3px 0 0 var(--green)}.nav .num{font:700 11px Manrope,sans-serif;opacity:.7;width:22px}.side-end{margin-top:auto;border:1px solid var(--line);border-radius:15px;padding:16px;background:#14222b}.side-end b{display:block;font:800 14px Manrope,sans-serif;margin:7px 0}.side-end p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}.side-end a{color:var(--green);display:inline-block;margin-top:12px;font-weight:700;font-size:12px}.signal{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:5px}
+    main{min-width:0;max-width:1680px;width:100%;padding:30px clamp(22px,4.7vw,76px) 70px;margin:0 auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:30px}.micro{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}.top-actions{display:flex;align-items:center;gap:13px;flex-wrap:wrap}.state{font-size:12px;color:#b6c3c6;display:flex;align-items:center;gap:7px}.state:before{content:"";width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 0 3px #bdf76d16}.button{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:10px 14px;border-radius:10px;font-weight:700;white-space:nowrap}.button:hover{background:#23313a}.button-primary{background:var(--green);border-color:var(--green);color:#101b13}.button-primary:hover{background:#d3ff9c}
+    .hero{border:1px solid #354a46;background:radial-gradient(circle at 90% 14%,#254c3a 0,transparent 37%),linear-gradient(105deg,#1c352f 0%,#13242b 62%,#112028 100%);border-radius:26px;min-height:360px;padding:clamp(26px,4.5vw,55px);display:grid;grid-template-columns:1.5fr 1fr;gap:36px;position:relative;overflow:hidden}.hero:after{content:"226";position:absolute;font:800 clamp(140px,25vw,340px)/1 Manrope,sans-serif;letter-spacing:-.1em;color:#d3ffe005;right:0;bottom:-72px;pointer-events:none}.hero>*{position:relative;z-index:1}.eyebrow{display:flex;align-items:center;gap:9px;color:var(--green);font-size:11px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}.eyebrow:before{content:"";height:1px;width:22px;background:currentColor}.hero h1{font:800 clamp(35px,4.7vw,67px)/1.09 Manrope,sans-serif;letter-spacing:-.055em;max-width:720px;margin:20px 0}.hero h1 span{color:var(--green)}.hero p{max-width:540px;color:#b8c9c8;font-size:14px;line-height:1.8}.hero-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.hero-aside{align-self:end;justify-self:end;display:grid;gap:12px;width:100%;max-width:305px}.distances{display:grid;gap:9px}.distance{display:flex;justify-content:space-between;border-bottom:1px solid #73968a50;padding:10px 0}.distance span{font-size:12px;color:#acc0bd}.distance b{font:800 21px Manrope,sans-serif}.distance:last-child{border:0}.distance.total{border-top:1px solid #73968a50;margin-top:5px;padding-top:16px}.distance.total b{color:var(--green)}
+    .section{margin-top:42px;scroll-margin-top:22px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px;flex-wrap:wrap}.section-head h2{font:800 clamp(22px,2.5vw,29px) Manrope,sans-serif;letter-spacing:-.045em;margin:8px 0 0}.section-head p{color:var(--muted);font-size:12px;margin:0;max-width:400px;line-height:1.6}.soft{color:var(--muted)}.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:21px;min-width:0}.tile-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.tile-label{font-size:11px;color:var(--muted);font-weight:600}.glyph{font:800 20px Manrope;color:var(--green)}.tile strong{display:block;font:800 clamp(22px,2.1vw,32px) Manrope,sans-serif;letter-spacing:-.06em;margin-top:15px}.tile small{font-size:11px;color:var(--muted);display:block;margin-top:7px;line-height:1.5}.phase-banner{border:1px solid var(--line);border-radius:15px;background:linear-gradient(90deg,#17252c,#112027);display:flex;gap:18px;padding:18px 21px;margin-top:14px;align-items:start}.phase-tag{font-size:10px;font-weight:800;color:#0a1913;background:var(--green);padding:7px 9px;border-radius:6px;white-space:nowrap}.phase-text{font-size:12px;color:#c1ced1;line-height:1.7}.phase-text b{display:block;font-size:13px;color:var(--text);margin-bottom:2px}
+    .week-panel{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:20px}.weekday-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px}.day{min-width:0;border:1px solid var(--line);background:#121f29;border-radius:13px;min-height:182px;padding:13px 10px}.day.today{border-color:#8abe6f}.day-date{font-size:11px;color:#9cb0b8;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:4px}.day-date b{font:800 18px Manrope,sans-serif;color:var(--text)}.session{width:100%;text-align:left;border:0;border-left:3px solid var(--aqua);color:var(--text);background:#23404b88;border-radius:6px;padding:10px 8px;margin-top:12px}.session.bike{border-color:var(--green);background:#2d463291}.session.run{border-color:var(--amber);background:#4b3b2b91}.session.strength,.session.mobility{border-color:var(--pink);background:#4c354491}.session small{display:block;font-size:10px;opacity:.8;margin-bottom:5px}.session b{display:block;line-height:1.4;font-size:11px}.session em{font-style:normal;display:block;opacity:.75;font-size:10px;margin-top:5px}.empty-day{color:#5f7884;font-size:11px;line-height:1.5;margin-top:27px}.legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:17px}.legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px;background:var(--aqua)}.legend .bike{background:var(--green)}.legend .run{background:var(--amber)}.legend .other{background:var(--pink)}.caption{margin-top:12px;color:var(--muted);font-size:11px;line-height:1.55}
+    .split{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:15px}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:23px}.panel h3{font:800 16px Manrope,sans-serif;margin:0 0 21px}.barline{display:grid;grid-template-columns:95px minmax(0,1fr) 60px;gap:12px;align-items:center;margin:19px 0;color:var(--muted);font-size:12px}.track{height:8px;border-radius:10px;background:#263742;overflow:hidden}.fill{height:100%;border-radius:10px;background:var(--aqua);width:0}.fill.bike{background:var(--green)}.fill.run{background:var(--amber)}.fill.other{background:var(--pink)}.barline strong{text-align:right;color:var(--text);font-weight:700}.info-row{border-bottom:1px solid var(--line);padding:13px 0;display:flex;justify-content:space-between;gap:10px;font-size:12px}.info-row:last-child{border:0}.info-row span{color:var(--muted)}.info-row b{text-align:right}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.sport-card{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:25px;min-width:0;position:relative;overflow:hidden}.sport-card:before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--aqua)}.sport-card.bike:before{background:var(--green)}.sport-card.run:before{background:var(--amber)}.sport-card.strength:before{background:var(--pink)}.sport-card .card-top{display:flex;justify-content:space-between;align-items:start;gap:12px}.sport-card .symbol{font:800 35px Manrope,sans-serif;color:var(--aqua);opacity:.9}.sport-card.bike .symbol{color:var(--green)}.sport-card.run .symbol{color:var(--amber)}.sport-card.strength .symbol{color:var(--pink)}.sport-card .over{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.15em}.sport-card h3{font:800 25px Manrope,sans-serif;letter-spacing:-.04em;margin:9px 0 0}.sport-card .distance-badge{font-size:11px;color:#bdd1d0;border:1px solid var(--line);padding:7px 9px;border-radius:7px;white-space:nowrap}.focus{font:700 14px Manrope,sans-serif;margin:21px 0 7px}.sport-card p{color:var(--muted);line-height:1.72;margin:0;min-height:62px;font-size:12px}.pillars{list-style:none;margin:18px 0;padding:0;display:grid;gap:9px}.pillars li{font-size:12px;color:#c4d2d5;display:flex;gap:8px;align-items:baseline}.pillars li:before{content:"↗";color:var(--green);font-weight:900}.sport-card .status-text{border-top:1px solid var(--line);margin-top:22px;padding-top:15px;color:var(--muted);font-size:11px}
+    .nutrition{display:grid;grid-template-columns:.85fr 1.15fr;border:1px solid #384b42;border-radius:var(--r);background:linear-gradient(140deg,#1b352e,#14272b 60%,#122129);overflow:hidden}.nutrition-intro{padding:34px}.nutrition-intro h3{font:800 clamp(24px,2.5vw,35px)/1.15 Manrope,sans-serif;letter-spacing:-.045em;margin:16px 0}.nutrition-intro p{color:#aebfbc;line-height:1.8;font-size:13px}.nutrition-steps{padding:25px 30px;background:#1020298c;display:grid;gap:9px}.meal{border:1px solid #35504d;border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:start}.meal-num{font:800 13px Manrope,sans-serif;color:var(--green);min-width:21px}.meal b{font-size:13px}.meal span{display:block;color:#9bb5b8;font-size:11px;margin-top:2px}.meal p{font-size:12px;line-height:1.6;color:#bbcbc9;margin:7px 0 0}
+    .milestones{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.milestone{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:24px}.milestone .index{font:800 11px Manrope,sans-serif;color:var(--green);letter-spacing:.1em}.milestone .big{font:800 clamp(35px,4vw,57px) Manrope,sans-serif;letter-spacing:-.08em;margin:13px 0}.milestone h3{font:800 14px Manrope,sans-serif;margin:0 0 8px}.milestone p{color:var(--muted);font-size:12px;line-height:1.6;margin:0}
+    footer{border-top:1px solid var(--line);margin-top:55px;padding-top:22px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:11px;line-height:1.7}
+    dialog{border:1px solid #47605c;border-radius:20px;background:#17252e;color:var(--text);padding:27px;width:min(520px,calc(100vw - 32px));box-shadow:0 25px 95px #000a}dialog::backdrop{background:#02070bd9}dialog h3{font:800 23px Manrope,sans-serif;letter-spacing:-.03em;margin:10px 0 18px}dialog p{font-size:13px;line-height:1.75;color:#b8cacf}dialog .meta{font-size:12px;color:var(--green);font-weight:800;letter-spacing:.08em}dialog .close{float:right;color:var(--text);background:#253743;border:1px solid var(--line);border-radius:8px;width:30px;height:30px}dialog .note{background:#20313a;padding:13px;border-radius:10px;white-space:pre-wrap}
+    .empty-state{padding:28px;background:#15232c;border:1px dashed #40515d;color:var(--muted);border-radius:14px;line-height:1.7}
+    @media(max-width:1100px){.shell{grid-template-columns:1fr}.sidebar{height:auto;padding:15px 18px;display:flex;flex-direction:row;align-items:center;position:sticky;gap:15px;overflow-x:auto}.sidebar .logo{flex:none}.sidebar .section-label,.side-end{display:none}.nav{flex-direction:row;gap:4px}.nav a{padding:10px 12px;white-space:nowrap}.nav a.active{box-shadow:inset 0 -2px 0 var(--green)}main{padding-top:22px}.weekday-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    @media(max-width:750px){.hero{grid-template-columns:1fr;min-height:0}.hero-aside{max-width:none;justify-self:stretch}.distances{grid-template-columns:repeat(3,1fr)}.distance{display:block}.distance span{display:block;margin-bottom:7px}.distance.total{grid-column:1/-1;display:flex}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.cards,.nutrition,.split{grid-template-columns:1fr}.weekday-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.day{min-height:120px}.milestones{grid-template-columns:1fr 1fr}.topbar{align-items:start}.micro{font-size:10px}}
+    @media(max-width:460px){.sidebar{padding:12px}.logotxt{display:none}.mark{width:34px;height:34px}.nav a .num{display:none}.nav a{padding:10px}.topbar{display:block}.top-actions{margin-top:12px}.summary{grid-template-columns:1fr 1fr}.tile{padding:16px}.weekday-grid{grid-template-columns:repeat(2,1fr)}.milestones{grid-template-columns:1fr}.phase-banner{display:block}.phase-text{margin-top:10px}.hero{padding:25px}.distance b{font-size:17px}.nutrition-intro,.nutrition-steps{padding:22px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Navegación principal">
+      <a href="#resumen" class="logo" aria-label="Ir al inicio"><span class="mark">△</span><span class="logotxt">IRONMAN OS<small>TRAINING MISSION</small></span></a>
+      <div>
+        <div class="section-label">TU ESPACIO</div>
+        <nav class="nav">
+          <a class="active" href="#resumen"><span class="num">01</span> Resumen</a>
+          <a href="#semana"><span class="num">02</span> Mi semana</a>
+          <a href="#planes"><span class="num">03</span> Mis planes</a>
+          <a href="#nutricion"><span class="num">04</span> Nutrición</a>
+          <a href="#objetivos"><span class="num">05</span> Objetivos</a>
+        </nav>
+      </div>
+      <div class="side-end">
+        <span class="micro"><span class="signal"></span> CONECTADO A GITHUB</span>
+        <b>Tu plan, siempre accesible.</b>
+        <p>Las sesiones publicadas en el repositorio aparecen aquí sin copiar archivos.</p>
+        <a href="../index.html">Abrir KONA OS ↗</a>
+      </div>
+    </aside>
+    <main>
+      <div class="topbar">
+        <div class="micro">CENTRO DE ENTRENAMIENTO <span style="color:#4a646d">/</span> PLANES</div>
+        <div class="top-actions">
+          <span class="state" id="syncStatus" role="status">Cargando plan publicado…</span>
+          <button type="button" class="button" id="refresh">↻ Actualizar</button>
+        </div>
+      </div>
+      <section class="hero" id="resumen">
+        <div>
+          <span class="eyebrow">UN OBJETIVO. TRES DISCIPLINAS.</span>
+          <h1>El camino se construye <span>cada día.</span></h1>
+          <p id="mission">Preparar un Ironman completo con resistencia sostenible, planificación individualizada y margen para disfrutar del proceso.</p>
+          <div class="hero-links">
+            <a href="#semana" class="button button-primary">Ver mi semana ↗</a>
+            <a href="#planes" class="button">Explorar mis planes</a>
+          </div>
+        </div>
+        <div class="hero-aside">
+          <span class="micro">DISTANCIAS IRONMAN</span>
+          <div class="distances">
+            <div class="distance"><span>NATACIÓN</span><b>3,8 <small>km</small></b></div>
+            <div class="distance"><span>CICLISMO</span><b>180 <small>km</small></b></div>
+            <div class="distance"><span>CARRERA</span><b>42,2 <small>km</small></b></div>
+            <div class="distance total"><span>DISTANCIA TOTAL</span><b>226 <small>km</small></b></div>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="section-head"><div><span class="micro">VISTA GENERAL</span><h2>La semana en números</h2></div><p>Datos del último plan semanal publicado. No son entrenamientos completados.</p></div>
+        <div class="summary">
+          <article class="tile"><div class="tile-top"><span class="tile-label">Sesiones previstas</span><span class="glyph">↗</span></div><strong id="kpiSessions">—</strong><small>En el plan publicado</small></article>
+          <article class="tile"><div class="tile-top"><span class="tile-label">Tiempo total</span><span class="glyph">◷</span></div><strong id="kpiTime">—</strong><small>Volumen planificado</small></article>
+          <article class="tile"><div class="tile-top"><span class="tile-label">Disciplinas activas</span><span class="glyph">△</span></div><strong id="kpiSports">—</strong><small>De las sesiones publicadas</small></article>
+          <article class="tile"><div class="tile-top"><span class="tile-label">Última revisión</span><span class="glyph">↻</span></div><strong id="kpiRevision">—</strong><small id="weekLabel">Sin cargar</small></article>
+        </div>
+        <div class="phase-banner"><span class="phase-tag" id="phaseName">PLAN SEMANAL</span><div class="phase-text"><b>Enfoque actual</b><span id="phaseObjective">Cargando la planificación disponible…</span></div></div>
+      </section>
+      <section class="section" id="semana">
+        <div class="section-head"><div><span class="micro">CALENDARIO DE ENTRENAMIENTO</span><h2 id="weekHeading">Mi semana</h2></div><p>Selecciona cualquier sesión para leer sus objetivos, intensidad y notas.</p></div>
+        <div class="week-panel">
+          <div class="weekday-grid" id="days"><div class="empty-state" style="grid-column:1/-1">Consultando el plan semanal…</div></div>
+          <div class="legend"><span><i></i>Natación</span><span><i class="bike"></i>Bici</span><span><i class="run"></i>Carrera</span><span><i class="other"></i>Fuerza / movilidad</span></div>
+          <p class="caption">Las sesiones se actualizan cuando se publica una nueva revisión de <code>plan-semana.json</code> en GitHub. El historial y los entrenamientos realizados se gestionan en <a href="../index.html" style="color:var(--green)">KONA OS</a>.</p>
+        </div>
+        <div class="split">
+          <div class="panel"><h3>Reparto del entrenamiento <span class="soft" style="font-size:11px;font-weight:500">· minutos previstos</span></h3><div id="sportBars"><div class="empty-state">No hay datos todavía.</div></div></div>
+          <div class="panel"><h3>Ficha del plan</h3><div id="planInfo"><div class="empty-state">Sin datos disponibles.</div></div></div>
+        </div>
+      </section>
+      <section class="section" id="planes">
+        <div class="section-head"><div><span class="micro">ESTRATEGIA POR DISCIPLINA</span><h2>Mis planes de entrenamiento</h2></div><p>Los objetivos de cada bloque y su evolución. Las sesiones concretas se publican en el calendario.</p></div>
+        <div class="cards" id="disciplineCards"><div class="empty-state" style="grid-column:1/-1">Cargando objetivos de entrenamiento…</div></div>
+      </section>
+      <section class="section" id="nutricion">
+        <div class="section-head"><div><span class="micro">NUTRICIÓN DEPORTIVA</span><h2>El cuarto pilar</h2></div><p>Alimentación al servicio de las sesiones, de la recuperación y del rendimiento.</p></div>
+        <div class="nutrition">
+          <div class="nutrition-intro"><span class="eyebrow" id="nutritionEyebrow">COMBUSTIBLE PARA ENTRENAR</span><h3 id="nutritionTitle">Comer para rendir.</h3><p id="nutritionDescription">Las pautas se adaptarán a las sesiones y a las necesidades individuales.</p><p class="micro" id="nutritionFootnote" style="font-size:10px;letter-spacing:.05em;margin-top:25px">Por definir según las necesidades.</p></div>
+          <div class="nutrition-steps" id="nutritionSteps"></div>
+        </div>
+      </section>
+      <section class="section" id="objetivos">
+        <div class="section-head"><div><span class="micro">VISIÓN A LARGO PLAZO</span><h2>La misión completa</h2></div><p>No se trata de ir deprisa desde el principio, sino de construir un nivel que puedas sostener.</p></div>
+        <div class="milestones">
+          <div class="milestone"><span class="index">01 / SALIR DEL AGUA ENTERO</span><div class="big">3,8 km</div><h3>Natación eficiente</h3><p>Conservar energía con una técnica cada vez más económica.</p></div>
+          <div class="milestone"><span class="index">02 / LLEGAR CON PIERNAS</span><div class="big">180 km</div><h3>Ciclismo sólido</h3><p>Resistir muchas horas con un esfuerzo controlado y buena alimentación.</p></div>
+          <div class="milestone"><span class="index">03 / TERMINAR FUERTE</span><div class="big">42,2 km</div><h3>Maratón sostenible</h3><p>Preparar el cuerpo para correr después de las dos primeras disciplinas.</p></div>
+        </div>
+      </section>
+      <footer>
+        <div>IRONMAN OS <span style="color:var(--green)">●</span> Tu centro de planificación conectado a GitHub.</div>
+        <div>Plan visible públicamente · Evita publicar información médica o privada en el repositorio. <a href="../index.html" style="color:var(--green)">Abrir aplicación principal ↗</a></div>
+      </footer>
+    </main>
+  </div>
+  <dialog id="sessionDialog" aria-labelledby="dialogTitle">
+    <button class="close" type="button" id="closeDialog" aria-label="Cerrar">×</button>
+    <div class="meta" id="dialogMeta"></div>
+    <h3 id="dialogTitle"></h3>
+    <p id="dialogInfo"></p>
+    <p class="note" id="dialogNotes"></p>
+  </dialog>
+  <script>
+  (() => {
+    'use strict';
+    const labels = {swim:'Natación',bike:'Ciclismo',run:'Carrera',strength:'Fuerza',mobility:'Movilidad'};
+    const daysOfWeek = ['LUN','MAR','MIÉ','JUE','VIE','SÁB','DOM'];
+    const $ = id => document.getElementById(id);
+    const safe = value => String(value == null ? '' : value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const sportKey = value => Object.prototype.hasOwnProperty.call(labels,value) ? value : 'strength';
+    const plainDate = text => { const n = String(text||'').split('-').map(Number); return n.length===3 && n.every(Number.isFinite) ? new Date(Date.UTC(n[0],n[1]-1,n[2],12)) : new Date(NaN) };
+    const dateText = (date,opts) => Number.isNaN(date.getTime()) ? 'Fecha no disponible' : date.toLocaleDateString('es-ES',Object.assign({timeZone:'UTC'},opts||{}));
+    const iso = date => date.toISOString().slice(0,10);
+    const minuteText = minutes => {const m=Math.round(minutes);return m<60?m+' min':Math.floor(m/60)+' h'+(m%60?' '+m%60+' min':'')};
+    let lastWeek = null;
+    function setStatus(message,error) { $('syncStatus').textContent=message; $('syncStatus').style.color=error?'#efa5b8':''; }
+    function renderWeek(data) {
+      if (!data || !Array.isArray(data.sessions) || typeof data.week_start!=='string') throw Error('Formato del plan semanal no válido');
+      const start=plainDate(data.week_start);
+      if(Number.isNaN(start.getTime())) throw Error('Fecha inicial no válida');
+      const sessions=data.sessions.filter(s=>s && typeof s.date==='string' && typeof s.sport==='string' && Number.isFinite(Number(s.minutes)) && Number(s.minutes)>=0);
+      lastWeek=sessions;
+      const total=sessions.reduce((a,s)=>a+Number(s.minutes),0);
+      const active=new Set(sessions.map(s=>s.sport));
+      $('kpiSessions').textContent=String(sessions.length);
+      $('kpiTime').textContent=minuteText(total);
+      $('kpiSports').textContent=String(active.size);
+      $('kpiRevision').textContent='v'+String(Number(data.revision)||1);
+      $('weekLabel').textContent='Inicio '+dateText(start,{day:'numeric',month:'short',year:'numeric'});
+      $('phaseName').textContent=String(data.phase||'Plan semanal');
+      $('phaseObjective').textContent=String(data.objective||'Sin descripción publicada.');
+      const end=new Date(start.getTime()+6*86400000);
+      $('weekHeading').textContent=dateText(start,{day:'numeric',month:'short'})+' – '+dateText(end,{day:'numeric',month:'short',year:'numeric'});
+      const today=new Date();
+      const localToday=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+      let dayMarkup='';
+      for(let i=0;i<7;i++){
+        const date=new Date(start.getTime()+i*86400000);
+        const dayStr=iso(date);
+        const items=sessions.filter(s=>s.date===dayStr);
+        const itemHtml=items.map(s=>'<button class="session '+safe(sportKey(s.sport))+'" data-session="'+safe(s.id||'')+'" type="button"><small>'+safe(labels[s.sport]||s.sport)+' · '+safe(minuteText(Number(s.minutes)))+'</small><b>'+safe(s.title||'Sesión')+'</b><em>'+safe(s.intensity||'Intensidad por definir')+'</em></button>').join('');
+        dayMarkup+='<div class="day '+(localToday===dayStr?'today':'')+'"><div class="day-date"><span>'+daysOfWeek[i]+'</span><b>'+date.getUTCDate()+'</b></div>'+(items.length?itemHtml:'<div class="empty-day">Sin sesión publicada</div>')+'</div>';
+      }
+      $('days').innerHTML=dayMarkup;
+      const bars=[['swim','Natación'],['bike','Ciclismo'],['run','Carrera'],['other','Otros']].map(([k,name])=>{
+        const value=sessions.filter(s=>k==='other'?!['swim','bike','run'].includes(s.sport):s.sport===k).reduce((a,s)=>a+Number(s.minutes),0);
+        const percent=total?Math.round(value/total*100):0;
+        return '<div class="barline"><span>'+name+'</span><div class="track" role="img" aria-label="'+safe(name+' '+percent+'%')+'"><div class="fill '+k+'" style="width:'+percent+'%"></div></div><strong>'+safe(minuteText(value))+'</strong></div>';
+      }).join('');
+      $('sportBars').innerHTML=bars;
+      $('planInfo').innerHTML='<div class="info-row"><span>Semana desde</span><b>'+safe(dateText(start,{day:'numeric',month:'long',year:'numeric'}))+'</b></div><div class="info-row"><span>Revisión</span><b>'+safe(data.revision||1)+'</b></div><div class="info-row"><span>Sesiones</span><b>'+sessions.length+'</b></div><div class="info-row"><span>Fuente</span><b>GitHub · plan-semana.json</b></div>';
+    }
+    function renderCatalog(data){
+      if(!data || !Array.isArray(data.disciplines))throw Error('El catálogo no tiene formato válido');
+      $('mission').textContent=String(data.mission||'Preparación a largo plazo para Ironman.');
+      $('disciplineCards').innerHTML=data.disciplines.map(d=>{
+        const points=Array.isArray(d.pillars)?d.pillars:[];
+        return '<article class="sport-card '+safe(sportKey(d.id))+'"><div class="card-top"><div><span class="over">'+safe(d.eyebrow||'DISCIPLINA')+'</span><h3>'+safe(d.name)+'</h3></div><span class="distance-badge">'+safe(d.distance)+'</span></div><div class="focus">'+safe(d.focus)+'</div><p>'+safe(d.description)+'</p><ul class="pillars">'+points.map(p=>'<li>'+safe(p)+'</li>').join('')+'</ul><div class="status-text"><span class="signal"></span>'+safe(d.status||'Plan en desarrollo')+'</div></article>';
+      }).join('');
+      const n=data.nutrition||{};
+      $('nutritionEyebrow').textContent=n.eyebrow||'NUTRICIÓN';
+      $('nutritionTitle').textContent=n.title||'Alimentación para entrenar';
+      $('nutritionDescription').textContent=n.description||'';
+      $('nutritionFootnote').textContent=n.footnote||'';
+      $('nutritionSteps').innerHTML=(Array.isArray(n.moments)?n.moments:[]).map((m,i)=>'<div class="meal"><span class="meal-num">'+String(i+1).padStart(2,'0')+'</span><div><b>'+safe(m.label)+'</b><span>'+safe(m.name)+'</span><p>'+safe(m.detail)+'</p></div></div>').join('');
+    }
+    function showSession(id){
+      const session=lastWeek && lastWeek.find(s=>String(s.id||'')===id);
+      if(!session)return;
+      $('dialogMeta').textContent=(labels[session.sport]||session.sport)+' · '+dateText(plainDate(session.date),{weekday:'long',day:'numeric',month:'long'});
+      $('dialogTitle').textContent=String(session.title||'Entrenamiento');
+      $('dialogInfo').textContent=minuteText(Number(session.minutes))+' · Intensidad: '+String(session.intensity||'Por definir')+' · RPE objetivo: '+String(session.rpeTarget==null?'—':session.rpeTarget);
+      $('dialogNotes').textContent=String(session.notes||'Sin observaciones adicionales.');
+      if(typeof $('sessionDialog').showModal==='function')$('sessionDialog').showModal();
+    }
+    async function readJSON(path){
+      const r=await fetch(path+'?v='+Date.now(),{cache:'no-store'});
+      if(!r.ok)throw Error('HTTP '+r.status);
+      return r.json();
+    }
+    let busy=false;
+    async function refresh(){
+      if(busy)return;
+      busy=true;
+      $('refresh').disabled=true;
+      setStatus('Comprobando cambios…',false);
+      const results=await Promise.allSettled([readJSON('../plan-semana.json'),readJSON('./catalogo.json')]);
+      let errors=[];
+      if(results[0].status==='fulfilled'){try{renderWeek(results[0].value)}catch(e){errors.push(e.message)}}else{errors.push('plan semanal')}
+      if(results[1].status==='fulfilled'){try{renderCatalog(results[1].value)}catch(e){errors.push(e.message)}}else{errors.push('planes por disciplina')}
+      setStatus(errors.length?'No se pudieron cargar: '+errors.join(', '):'Actualizado · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),errors.length>0);
+      busy=false;
+      $('refresh').disabled=false;
+    }
+    document.addEventListener('click',e=>{
+      const hit=e.target.closest('[data-session]');
+      if(hit)showSession(hit.getAttribute('data-session'));
+    });
+    $('refresh').addEventListener('click',refresh);
+    $('closeDialog').addEventListener('click',()=>$('sessionDialog').close());
+    $('sessionDialog').addEventListener('click',e=>{if(e.target===$('sessionDialog'))$('sessionDialog').close()});
+    document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{
+      document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));a.classList.add('active');
+    }));
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+    window.addEventListener('focus',refresh);
+    setInterval(()=>{if(!document.hidden)refresh()},120000);
+    refresh();
+  })();
+  </script>
+</body>
+</html>
