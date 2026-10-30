@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-30",
+  "mission": "Preparar un Ironman con resistencia sostenible, constancia y disfrute de cada entrenamiento.",
+  "disciplines": [
+    {
+      "id": "swim",
+      "name": "Natación",
+      "distance": "3,8 km",
+      "eyebrow": "01 / EFICIENCIA",
+      "focus": "Nadar gastando menos energía",
+      "description": "Mejora técnica, control del esfuerzo y progresión hacia aguas abiertas.",
+      "pillars": [
+        "Técnica y economía de brazada",
+        "Base aeróbica",
+        "Orientación en aguas abiertas"
+      ],
+      "status": "Plan detallado pendiente"
+    },
+    {
+      "id": "bike",
+      "name": "Ciclismo",
+      "distance": "180 km",
+      "eyebrow": "02 / RESISTENCIA",
+      "focus": "Acumular kilómetros de forma sostenible",
+      "description": "Construir resistencia para rutas largas, grupetas y marchas cicloturistas.",
+      "pillars": [
+        "Tiradas largas progresivas",
+        "Control de intensidad",
+        "Nutrición en ruta"
+      ],
+      "status": "Plan detallado pendiente"
+    },
+    {
+      "id": "run",
+      "name": "Carrera",
+      "distance": "42,2 km",
+      "eyebrow": "03 / DURABILIDAD",
+      "focus": "Correr bien tras nadar y pedalear",
+      "description": "Progresar con prudencia, desarrollar base aeróbica y capacidad de correr tras la bicicleta.",
+      "pillars": [
+        "Regularidad",
+        "Progresión de tirada larga",
+        "Transiciones específicas"
+      ],
+      "status": "Plan detallado pendiente"
+    },
+    {
+      "id": "strength",
+      "name": "Fuerza y recuperación",
+      "distance": "Soporte",
+      "eyebrow": "04 / CONSISTENCIA",
+      "focus": "Mantener la continuidad",
+      "description": "Apoyar las tres disciplinas con fuerza, movilidad y descanso.",
+      "pillars": [
+        "Fuerza general",
+        "Movilidad",
+        "Recuperación"
+      ],
+      "status": "Plan detallado pendiente"
+    }
+  ],
+  "nutrition": {
+    "eyebrow": "COMBUSTIBLE PARA ENTRENAR",
+    "title": "Alimentación para rendir y recuperar",
+    "description": "Priorizar el rendimiento, ajustar la energía a la carga del entrenamiento y permitir que el peso evolucione.",
+    "footnote": "Menús y cantidades concretas pendientes de planificación individual.",
+    "moments": [
+      {
+        "name": "Antes del trabajo",
+        "label": "Desayuno",
+        "detail": "Asegurar energía desde primera hora."
+      },
+      {
+        "name": "Durante la mañana",
+        "label": "Almuerzo y comida",
+        "detail": "Repartir la alimentación con antelación a la sesión."
+      },
+      {
+        "name": "Antes de entrenar",
+        "label": "Merienda preentreno",
+        "detail": "Adaptar el aporte de energía al esfuerzo."
+      },
+      {
+        "name": "Después de entrenar",
+        "label": "Cena y recuperación",
+        "detail": "Reponer energía e incluir proteína."
+      }
+    ]
+  }
+}
