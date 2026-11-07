@@ -1,14 +1,78 @@
 {
-  "week_start": "2026-11-02",
-  "revision": 1,
-  "phase": "Retorno conservador · Semana 1",
-  "objective": "Reiniciar con suavidad tras la recuperación. Sin series, sin CrossFit ni natación. Todo sujeto a tolerancia y las indicaciones del equipo médico.",
+  "week_start": "2026-11-09",
+  "revision": 2,
+  "phase": "Base aeróbica progresiva · Semana 2",
+  "objective": "Consolidar 3 días de bici (lunes, miércoles, sábado), 3 de carrera (martes, jueves, domingo) y 1 de fuerza en casa. Carga controlada y prioridad aeróbica. Sin natación mientras la piscina permanezca cerrada. Realizar solo si estás recuperado y con autorización para entrenar; si no, reducir y revisar la carga.",
   "sessions": [
-    {"id":"nov02-run","date":"2026-11-02","sport":"run","minutes":30,"title":"Trote o caminar-correr muy suave","intensity":"Z1–Z2 / conversacional","rpeTarget":2,"notes":"Si reaparece presión nasal, molestia o cualquier síntoma, interrumpir y consultar."},
-    {"id":"nov03-bike","date":"2026-11-03","sport":"bike","minutes":45,"title":"Bici fácil","intensity":"Z1–Z2","rpeTarget":2,"notes":"Cadencia cómoda, terreno llano o rodillo."},
-    {"id":"nov04-run","date":"2026-11-04","sport":"run","minutes":35,"title":"Rodaje controlado","intensity":"Z1–Z2","rpeTarget":2,"notes":"No perseguir ritmos previos a la operación."},
-    {"id":"nov06-run","date":"2026-11-06","sport":"run","minutes":35,"title":"Rodaje fácil","intensity":"Z1–Z2","rpeTarget":2,"notes":"Si hay fatiga acumulada, sustituir por paseo o descanso."},
-    {"id":"nov07-bike","date":"2026-11-07","sport":"bike","minutes":115,"title":"Resistencia aeróbica sin intensidad","intensity":"Z1–Z2","rpeTarget":3,"notes":"Hidratación y aporte de carbohidratos según tolerancia."},
-    {"id":"nov08-bike","date":"2026-11-08","sport":"bike","minutes":75,"title":"Bici suave de consolidación","intensity":"Z1–Z2","rpeTarget":2,"notes":"Valorar sensaciones y recuperación para revisar el domingo."}
+    {
+      "id": "2026-11-09-bike-z2",
+      "date": "2026-11-09",
+      "sport": "bike",
+      "minutes": 60,
+      "title": "Rodillo · Base aeróbica y cadencia",
+      "intensity": "Z2 · 125–150 W (FTP estimado 209 W)",
+      "rpeTarget": 3,
+      "notes": "10 min muy suaves (95–120 W). 40 min continuos a 125–150 W, cadencia 85–95 rpm y respiración cómoda. 10 min de vuelta a la calma. Objetivo: acumular minutos aeróbicos, no apretar. Si la fatiga es alta, 45 min suaves bastan. 5–10 min de movilidad opcional tras acabar."
+    },
+    {
+      "id": "2026-11-10-run-easy",
+      "date": "2026-11-10",
+      "sport": "run",
+      "minutes": 45,
+      "title": "Carrera · Rodaje suave y técnica",
+      "intensity": "Z2 conversacional · RPE 3–4",
+      "rpeTarget": 3,
+      "notes": "10 min de entrada en calor suave; 30 min de carrera fácil en terreno llano; 5 min muy suaves al terminar. Mantener una conversación completa: no forzar un ritmo por kilómetro. Prestar atención a sensaciones de la zona lateral de la rodilla y estabilidad de cadera. Si hay dolor que altere la zancada, parar."
+    },
+    {
+      "id": "2026-11-11-bike-tempo",
+      "date": "2026-11-11",
+      "sport": "bike",
+      "minutes": 60,
+      "title": "Rodillo · 3 × 8 min tempo controlado",
+      "intensity": "Bloques 165–178 W (~79–85 % FTP)",
+      "rpeTarget": 5,
+      "notes": "12 min de calentamiento fácil y progresivo. Hacer 3 × 8 min a 165–178 W (cadencia 80–95 rpm), con 4 min a 100–125 W entre bloques. Acabar con 16 min fáciles: total 60 min. Es esfuerzo sostenido, no una contrarreloj. Si hay signos de recuperación incompleta o restricciones médicas, sustituir los bloques por Z2."
+    },
+    {
+      "id": "2026-11-12-run-steady",
+      "date": "2026-11-12",
+      "sport": "run",
+      "minutes": 45,
+      "title": "Carrera · 3 × 6 min ritmo controlado",
+      "intensity": "Bloques RPE 5; resto Z1–Z2",
+      "rpeTarget": 5,
+      "notes": "10 min suaves. 3 × 6 min a un ritmo vivo pero controlado, sin jadear (RPE 5/10); entre bloques, 3 min de trote suave (2 recuperaciones). Finalizar con 11 min suaves. Total 45 min. No buscar marca ni sprintar. Si no estás plenamente recuperado o aparece dolor, convertir toda la sesión en rodaje fácil."
+    },
+    {
+      "id": "2026-11-13-strength-home",
+      "date": "2026-11-13",
+      "sport": "strength",
+      "minutes": 35,
+      "title": "Fuerza en casa · Full body con paralelas",
+      "intensity": "Técnica · 2 series / RPE 5–6",
+      "rpeTarget": 5,
+      "notes": "5 min movilidad. Circuito 2 vueltas, 60–75 s de descanso por ejercicio: 8–10 sentadillas lentas; 8 zancadas atrás por pierna; 8–12 puentes de glúteo; 6–10 flexiones (manos en paralelas estables, o pared/suelo); 8 elevaciones de gemelo por pierna; 25–35 s plancha lateral por lado. Terminar con 5 min movilidad. Evitar el fallo muscular y las agujetas intensas para el sábado."
+    },
+    {
+      "id": "2026-11-14-bike-long",
+      "date": "2026-11-14",
+      "sport": "bike",
+      "minutes": 120,
+      "title": "Tirada larga · Rodillo o carretera",
+      "intensity": "Z2 · 125–150 W / RPE 3–4",
+      "rpeTarget": 3,
+      "notes": "Opción rodillo: 15 min muy suaves + 90 min Z2 125–150 W + 15 min de vuelta a la calma. Cambiar brevemente de cadencia o postura cada 20 min. Opción carretera: 2 h de terreno cómodo y pedaleo constante, evitando entrar en piques con la grupeta. Para 2 h, probar aprox. 40–60 g de hidratos/h si los toleras, y beber según sed, clima y sudoración. No aumentar duración si acabas fatigado."
+    },
+    {
+      "id": "2026-11-15-run-long",
+      "date": "2026-11-15",
+      "sport": "run",
+      "minutes": 65,
+      "title": "Carrera · Tirada larga fácil",
+      "intensity": "Z2 conversacional · RPE 3–4",
+      "rpeTarget": 3,
+      "notes": "10 min muy suaves + 45 min fáciles y estables + 10 min suaves. Terreno llano y ritmo guiado por la respiración, sin final rápido. Objetivo: tiempo de pie y economía de carrera, no récord de distancia. Si notas piernas excesivamente cargadas tras la bici del sábado, recorta a 45–50 min o camina. Registrar RPE y molestias para ajustar la semana siguiente."
+    }
   ]
 }
